@@ -80,17 +80,17 @@ The details of my model:
 
 #### 2. Attempts to reduce overfitting in the model
 
-The model contains dropout layers in order to reduce overfitting (model.py lines 21). 
+The model contains dropout layers after each convolution layer in order to reduce overfitting. 
 
-The model was trained and validated on different data sets to ensure that the model was not overfitting (code line 10-16). The model was tested by running it through the simulator and ensuring that the vehicle could stay on the track.
+The model was trained and validated on different data sets to ensure that the model was not overfitting (code line 78). The model was tested by running it through the simulator and ensuring that the vehicle could stay on the track.
 
 #### 3. Model parameter tuning
 
-The model used an adam optimizer, so the learning rate was not tuned manually (model.py line 25).
+The model used an adam optimizer, so the learning rate was not tuned manually (model.py line 77).
 
 #### 4. Appropriate training data
 
-Training data was chosen to keep the vehicle driving on the road. I used a combination of center lane driving, recovering from the left and right sides of the road ... 
+Training data was chosen to keep the vehicle driving on the road. I used a combination of center lane driving, recovering from the left and right sides of the road, especially on some uncommon road condition like bridge and sharp turns.
 
 For details about how I created the training data, see the next section. 
 
@@ -122,7 +122,7 @@ Here is a visualization of the architecture (note: visualizing the architecture 
 
 #### 3. Creation of the Training Set & Training Process
 
-To capture good driving behavior, I first recorded two laps on track one using center lane driving. Here is an example image of center lane driving:
+To capture good driving behavior, I first recorded four laps on track one using center lane driving - two of them are clockwise, while the other two laps are counter-clockwise. Here is an example image of center lane driving:
 
 ![alt text][image2]
 
@@ -132,18 +132,13 @@ I then recorded the vehicle recovering from the left side and right sides of the
 ![alt text][image4]
 ![alt text][image5]
 
-Then I repeated this process on track two in order to get more data points.
-
-To augment the data sat, I also flipped images and angles thinking that this would ... For example, here is an image that has then been flipped:
+To augment the data sat, I also flipped images and angles thinking that this would reduce overfit. For example, here is an image that has then been flipped:
 
 ![alt text][image6]
 ![alt text][image7]
 
-Etc ....
+After the collection process, I had about 30K of data points. I noticed that a large amount of data has steering angle 0, so I downsampled the data points whose angle is very small (<0.1) by half. I believe that will make the data more balanced. After downsampling, I got about 10K data points.
 
-After the collection process, I had X number of data points. I then preprocessed this data by ...
+I finally randomly shuffled the data set and put 20% of the data into a validation set. 
 
-
-I finally randomly shuffled the data set and put Y% of the data into a validation set. 
-
-I used this training data for training the model. The validation set helped determine if the model was over or under fitting. The ideal number of epochs was Z as evidenced by ... I used an adam optimizer so that manually training the learning rate wasn't necessary.
+I used this training data for training the model. The validation set helped determine if the model was over or under fitting. The ideal number of epochs was 5 to 10 based on the output of `model.fit()`. I used an adam optimizer so that manually training the learning rate wasn't necessary.
