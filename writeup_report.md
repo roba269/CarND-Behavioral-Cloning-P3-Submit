@@ -46,10 +46,37 @@ The model.py file contains the code for training and saving the convolution neur
 
 #### 1. An appropriate model architecture has been employed
 
-// TODO
-My model consists of a convolution neural network with 3x3 filter sizes and depths between 32 and 128 (model.py lines 18-24) 
+My model is mostly following network architecture in Nvidia's paper [End-to-End Deep Learning for Self-Driving Cars](https://devblogs.nvidia.com/parallelforall/deep-learning-self-driving-cars/). The only difference is that, I added extra dropout layers after conv layers to reduce overfitting.
 
-The model includes RELU layers to introduce nonlinearity (code line 20), and the data is normalized in the model using a Keras lambda layer (code line 18). 
+The details of my model:
+
+| Layer         		      |     Description	        					| 
+|:---------------------:|:---------------------------------------------:| 
+| Input         		    | 160x320x3 RGB image   							| 
+| Normalization         | simply (x / 255.0 - 0.5)            |
+| Cropping              | Crop top 50 pixel and bottom 20 pixel |
+| Convolution 5x5     	| 2x2 stride, valid padding, 24 output channels 	|
+| RELU					        |												|
+| Dropout               | drop 20%              |
+| Convolution 5x5	      | 2x2 stride, valid padding, 36 output channels    |
+| RELU					             |												|
+| Dropout               | drop 20%              |
+| Convolution 5x5     	| 2x2 stride, valid padding, 48 output channels 	|
+| RELU					             |												|
+| Dropout               | drop 20%              |
+| Convolution 3x3     	| 2x2 stride, valid padding, 64 output channels 	|
+| RELU					             |												|
+| Dropout               | drop 20%              |
+| Convolution 3x3     	| 2x2 stride, valid padding, 64 output channels 	|
+| RELU					             |												|
+| Flatten               |        | 
+| Fully connected		    | Dense(100)       |
+| RELU					             |												|
+| Fully connected		    | Dense(50)       |
+| RELU					             |												|
+| Fully connected		    | Dense(10)       |
+| RELU					             |												|
+| Output                     |                        |
 
 #### 2. Attempts to reduce overfitting in the model
 
