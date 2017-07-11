@@ -76,9 +76,9 @@ In order to gauge how well the model was working, I split my image and steering 
 
 To reduce the overfitting, I added dropout layers after each conv layers, which turned out to be effective. (I also tried dropout after full connection layers, but that didn't help.)
 
-The final step was to run the simulator to see how well the car was driving around track one. There were a few spots where the vehicle fell off the track, like at the begining and ending part of the bridge, and at a sharp right turn near the end of the tap. I think that's mostly because of lacking in data. For example, if you simply drive a lap, there are only a few images with paved road at the bottom and bridge at the top, not enough to train a reliable model in such scanrio. And because most of the turns are left-turns, so the model didn't do well for the right-turn case.
+The final step was to run the simulator to see how well the car was driving around track one. There were a few spots where the vehicle fell off the track, like at the begining and ending part of the bridge, and at a sharp right turn near the end of the lap. I think that's mostly because of lacking in data. For example, if you simply drive a lap, there are only a few images with paved road at the bottom and bridge at the top, not enough to train a reliable model in such scenario. And because most of the turns are left-turns, so the model didn't do well for the right-turn case.
 
-To improve the driving behavior in these cases, I intentionally recorded more data at both ends of the bridge, and more data on right turns. And of course, we also need the recovery data, i.e., driving from the left and right borders of the road to the center. I found that collecting more data for particular bad scanarios usually gave me better results than tuning the model.
+To improve the driving behavior in these cases, I intentionally recorded more data at both ends of the bridge, and more data on right turns. And of course, we also need the recovery data, i.e., driving from the left and right borders of the road to the center. I found that collecting more data for particular bad scenarios usually gave me better results than tuning the model.
 
 At the end of the process, the vehicle is able to drive autonomously around the track without leaving the road.
 
@@ -117,7 +117,7 @@ I then recorded the vehicle recovering from the left side and right sides of the
 ![alt text][left_side]
 ![alt text][right_side]
 
-To augment the data sat, I also flipped images and angles thinking that this would reduce overfit. For example, here is an image that has then been flipped:
+To augment the data set, I also flipped images and angles thinking that this would reduce overfit. For example, here is an image that has then been flipped:
 
 ![alt text][before_flip]
 ![alt text][after_flip]
@@ -127,7 +127,7 @@ Like described above, I particularly generated more data on the bad cases during
 ![alt text][bridge1]
 ![alt text][bridge2]
 
-After the collection process, I had about 30K of data points. I noticed that a large amount of data has steering angle 0, so I downsampled the data points whose angle is very small (<0.1) by half. I believe that will make the data more balanced. After downsampling, I got about 10K data points.
+After the collection process, I had about 10K of data points. I noticed that a large amount of data has steering angle 0, so I downsampled the data points whose angle is very small (<0.1) by half. I believe that will make the data more balanced. After downsampling and flipping, I got about 13K data points finally.
 
 I didn't use the image from the left and right camera, because I found it's not easy to get a good correction value to adjust the steering angle - either nothing get changed, or the car will wiggle on the road.
 
