@@ -14,7 +14,7 @@ images = []
 measurements = []
 for line in lines:
 	deg = float(line[3])
-	if abs(deg) < 0.1 and np.random.random() < 0.5:
+	if abs(deg) < 0.1 and np.random.random() < 0.5: # downsample data
 		continue
 
 	img_center = "../data/IMG/" + line[0].split('/')[-1]
@@ -57,7 +57,7 @@ model.add(Lambda(lambda x: x / 255.0 - 0.5, input_shape=(160,320,3)))
 model.add(Cropping2D(cropping=((50,20), (0,0)), input_shape=(160,320,3)))
 
 # the following network architecture is mostly same as Nvidia's paper.
-# To avoid overfit, added a dropout layer between conv layers and full-connection layers.
+# To avoid overfit, added a dropout layer between conv layers.
 model.add(Convolution2D(24,kernel_size=(5,5),strides=(2,2),padding='valid',activation='relu'))
 model.add(Dropout(0.2))
 model.add(Convolution2D(36,kernel_size=(5,5),strides=(2,2),padding='valid',activation='relu'))
