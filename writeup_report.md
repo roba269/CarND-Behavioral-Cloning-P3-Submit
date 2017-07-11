@@ -10,13 +10,13 @@ The goals / steps of this project are the following:
 
 [//]: # (Image References)
 
-[image1]: ./examples/placeholder.png "Model Visualization"
-[image2]: ./examples/placeholder.png "Grayscaling"
-[image3]: ./examples/placeholder_small.png "Recovery Image"
-[image4]: ./examples/placeholder_small.png "Recovery Image"
-[image5]: ./examples/placeholder_small.png "Recovery Image"
-[image6]: ./examples/placeholder_small.png "Normal Image"
-[image7]: ./examples/placeholder_small.png "Flipped Image"
+[center]: ./examples/center.jpg
+[left_side]: ./example/left_side.jpg
+[right_side]: ./example/right_side.jpg
+[before_flip]: ./example/before_flip.jpg
+[after_flip]: ./example/after_flip.jpg
+[bridge1]: ./example/bridge1.jpg
+[bridge2]: ./example/bridge2.jpg
 
 ## Rubric Points
 ### Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/432/view) individually and describe how I addressed each point in my implementation.  
@@ -46,37 +46,7 @@ The model.py file contains the code for training and saving the convolution neur
 
 #### 1. An appropriate model architecture has been employed
 
-My model is mostly following network architecture in Nvidia's paper [End-to-End Deep Learning for Self-Driving Cars](https://devblogs.nvidia.com/parallelforall/deep-learning-self-driving-cars/). The only difference is that, I added extra dropout layers after conv layers to reduce overfitting.
-
-The details of my model:
-
-| Layer         		      |     Description	        					| 
-|:---------------------:|:---------------------------------------------:| 
-| Input         		    | 160x320x3 RGB image   							| 
-| Normalization         | simply (x / 255.0 - 0.5)            |
-| Cropping              | Crop top 50 pixel and bottom 20 pixel |
-| Convolution 5x5     	| 2x2 stride, valid padding, 24 output channels 	|
-| RELU					        |												|
-| Dropout               | drop 20%              |
-| Convolution 5x5	      | 2x2 stride, valid padding, 36 output channels    |
-| RELU					             |												|
-| Dropout               | drop 20%              |
-| Convolution 5x5     	| 2x2 stride, valid padding, 48 output channels 	|
-| RELU					             |												|
-| Dropout               | drop 20%              |
-| Convolution 3x3     	| 2x2 stride, valid padding, 64 output channels 	|
-| RELU					             |												|
-| Dropout               | drop 20%              |
-| Convolution 3x3     	| 2x2 stride, valid padding, 64 output channels 	|
-| RELU					             |												|
-| Flatten               |        | 
-| Fully connected		    | Dense(100)       |
-| RELU					             |												|
-| Fully connected		    | Dense(50)       |
-| RELU					             |												|
-| Fully connected		    | Dense(10)       |
-| RELU					             |												|
-| Output                     |                        |
+My model is mostly following network architecture in Nvidia's paper [End-to-End Deep Learning for Self-Driving Cars](https://devblogs.nvidia.com/parallelforall/deep-learning-self-driving-cars/). The only difference is that, I added extra dropout layers after conv layers to reduce overfitting. Please see the layer details on the next section.
 
 #### 2. Attempts to reduce overfitting in the model
 
@@ -100,42 +70,62 @@ For details about how I created the training data, see the next section.
 
 The overall strategy for deriving a model architecture was to ...
 
-My first step was to use a convolution neural network model similar to the ... I thought this model might be appropriate because ...
+My first step was to use a convolution neural network model similar to the Nvdia' paper *End-to-End Deep Learning for Self-Driving Cars*. I thought this model might be appropriate because the problem domain is similar, though the case for this project might be simplier.
 
-In order to gauge how well the model was working, I split my image and steering angle data into a training and validation set. I found that my first model had a low mean squared error on the training set but a high mean squared error on the validation set. This implied that the model was overfitting. 
+In order to gauge how well the model was working, I split my image and steering angle data into a training and validation set. I found that my first model was getting lower and lower mean squared error after each epoch, while the error on validation set was high and didn't change much after epochs. This implied that the model was overfitting. 
 
-To combat the overfitting, I modified the model so that ...
+To reduce the overfitting, I added dropout layers after each conv layers, which turned out to be effective. (I also tried dropout after full connection layers, but that didn't help.)
 
-Then I ... 
+The final step was to run the simulator to see how well the car was driving around track one. There were a few spots where the vehicle fell off the track, like at the begining and ending part of the bridge, and at a sharp right turn near the end of the tap. I think that's mostly because of lacking in data. For example, if you simply drive a lap, there are only a few images with paved road at the bottom and bridge at the top, not enough to train a reliable model in such scanrio. And because most of the turns are left-turns, so the model didn't do well for the right-turn case.
 
-The final step was to run the simulator to see how well the car was driving around track one. There were a few spots where the vehicle fell off the track... to improve the driving behavior in these cases, I ....
+To improve the driving behavior in these cases, I intentionally recorded more data at both ends of the bridge, and more data on right turns. And of course, we also need the recovery data, i.e., driving from the left and right borders of the road to the center. I found that collecting more data for particular bad scanarios usually gave me better results than tuning the model.
 
 At the end of the process, the vehicle is able to drive autonomously around the track without leaving the road.
 
 #### 2. Final Model Architecture
 
-The final model architecture (model.py lines 18-24) consisted of a convolution neural network with the following layers and layer sizes ...
+The final model architecture (model.py lines 18-24) consisted of a convolution neural network with the following layers and layer sizes:
 
-Here is a visualization of the architecture (note: visualizing the architecture is optional according to the project rubric)
-
-![alt text][image1]
+| Layer         		      |     Description	        					| 
+|:---------------------:|:---------------------------------------------:| 
+| Input         		    | 160x320x3 RGB image   							| 
+| Normalization         | simply (x / 255.0 - 0.5)            |
+| Cropping              | Crop top 50 pixel and bottom 20 pixel |
+| Convolution 5x5     	| 2x2 stride, valid padding, 24 output channels, RELU activation 	|
+| Dropout               | drop 20%              |
+| Convolution 5x5	      | 2x2 stride, valid padding, 36 output channels, RELU activation    |
+| Dropout               | drop 20%              |
+| Convolution 5x5     	| 2x2 stride, valid padding, 48 output channels, RELU activation 	|
+| Dropout               | drop 20%              |
+| Convolution 3x3     	| 2x2 stride, valid padding, 64 output channels, RELU activation 	|
+| Dropout               | drop 20%              |
+| Convolution 3x3     	| 2x2 stride, valid padding, 64 output channels, RELU activation 	|
+| Flatten               |        | 
+| Fully connected		    | Dense(100), RELU activation      |
+| Fully connected		    | Dense(50), RELU activation       |
+| Fully connected		    | Dense(10), RELU activation       |
+| Output                     |                        |
 
 #### 3. Creation of the Training Set & Training Process
 
 To capture good driving behavior, I first recorded four laps on track one using center lane driving - two of them are clockwise, while the other two laps are counter-clockwise. Here is an example image of center lane driving:
 
-![alt text][image2]
+![alt text][center]
 
-I then recorded the vehicle recovering from the left side and right sides of the road back to center so that the vehicle would learn to .... These images show what a recovery looks like starting from ... :
+I then recorded the vehicle recovering from the left side and right sides of the road back to center, like the following examples:
 
-![alt text][image3]
-![alt text][image4]
-![alt text][image5]
+![alt text][left_side]
+![alt text][right_side]
 
 To augment the data sat, I also flipped images and angles thinking that this would reduce overfit. For example, here is an image that has then been flipped:
 
-![alt text][image6]
-![alt text][image7]
+![alt text][before_flip]
+![alt text][after_flip]
+
+Like described above, I particularly generated more data on the bad cases during the testing iterations, for example, on the bridge:
+
+![alt text][bridge1]
+![alt text][bridge2]
 
 After the collection process, I had about 30K of data points. I noticed that a large amount of data has steering angle 0, so I downsampled the data points whose angle is very small (<0.1) by half. I believe that will make the data more balanced. After downsampling, I got about 10K data points.
 
