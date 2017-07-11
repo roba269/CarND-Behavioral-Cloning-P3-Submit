@@ -11,12 +11,12 @@ The goals / steps of this project are the following:
 [//]: # (Image References)
 
 [center]: ./examples/center.jpg
-[left_side]: ./example/left_side.jpg
-[right_side]: ./example/right_side.jpg
-[before_flip]: ./example/before_flip.jpg
-[after_flip]: ./example/after_flip.jpg
-[bridge1]: ./example/bridge1.jpg
-[bridge2]: ./example/bridge2.jpg
+[left_side]: ./examples/left_side.jpg
+[right_side]: ./examples/right_side.jpg
+[before_flip]: ./examples/before_flip.jpg
+[after_flip]: ./examples/after_flip.jpg
+[bridge1]: ./examples/bridge1.jpg
+[bridge2]: ./examples/bridge2.jpg
 
 ## Rubric Points
 ### Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/432/view) individually and describe how I addressed each point in my implementation.  
@@ -46,7 +46,9 @@ The model.py file contains the code for training and saving the convolution neur
 
 #### 1. An appropriate model architecture has been employed
 
-My model is mostly following network architecture in Nvidia's paper [End-to-End Deep Learning for Self-Driving Cars](https://devblogs.nvidia.com/parallelforall/deep-learning-self-driving-cars/). The only difference is that, I added extra dropout layers after conv layers to reduce overfitting. Please see the layer details on the next section.
+My model is mostly following network architecture in Nvidia's paper [End-to-End Deep Learning for Self-Driving Cars](https://devblogs.nvidia.com/parallelforall/deep-learning-self-driving-cars/). Simply speaking, it consists of 5 convolution layers with 5x5 or 3x3 filter sizes and depths between 24 and 64, and followed by 3 full connection layers. (model.py lines 61-74). The model includes RELU layers to introduce nonlinearity, and the data is normalized in the model using a Keras lambda layer (code line 54).
+
+The only difference between my model and the Nvidia paper model is that, I added extra dropout layers after conv layers to reduce overfitting. Please see the layer details on the next section.
 
 #### 2. Attempts to reduce overfitting in the model
 
@@ -67,8 +69,6 @@ For details about how I created the training data, see the next section.
 ### Model Architecture and Training Strategy
 
 #### 1. Solution Design Approach
-
-The overall strategy for deriving a model architecture was to ...
 
 My first step was to use a convolution neural network model similar to the Nvdia' paper *End-to-End Deep Learning for Self-Driving Cars*. I thought this model might be appropriate because the problem domain is similar, though the case for this project might be simplier.
 
@@ -128,6 +128,8 @@ Like described above, I particularly generated more data on the bad cases during
 ![alt text][bridge2]
 
 After the collection process, I had about 30K of data points. I noticed that a large amount of data has steering angle 0, so I downsampled the data points whose angle is very small (<0.1) by half. I believe that will make the data more balanced. After downsampling, I got about 10K data points.
+
+I didn't use the image from the left and right camera, because I found it's not easy to get a good correction value to adjust the steering angle - either nothing get changed, or the car will wiggle on the road.
 
 I finally randomly shuffled the data set and put 20% of the data into a validation set. 
 
