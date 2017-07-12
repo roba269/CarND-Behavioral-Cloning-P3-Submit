@@ -47,6 +47,7 @@ y_train = np.array(measurements)
 
 from keras.models import Sequential, Model
 from keras.layers import Flatten, Dense, Cropping2D, Convolution2D, Lambda, Dropout
+from keras import regularizers
 
 model = Sequential()
 
@@ -58,19 +59,20 @@ model.add(Cropping2D(cropping=((50,20), (0,0)), input_shape=(160,320,3)))
 
 # the following network architecture is mostly same as Nvidia's paper.
 # To avoid overfit, added a dropout layer between conv layers.
-model.add(Convolution2D(24,kernel_size=(5,5),strides=(2,2),padding='valid',activation='relu'))
+model.add(Convolution2D(24,kernel_size=(5,5),strides=(2,2),padding='valid',activation='relu',kernel_regularizer=regularizers.l2(0.001)))
 model.add(Dropout(0.2))
-model.add(Convolution2D(36,kernel_size=(5,5),strides=(2,2),padding='valid',activation='relu'))
+model.add(Convolution2D(36,kernel_size=(5,5),strides=(2,2),padding='valid',activation='relu',kernel_regularizer=regularizers.l2(0.001)))
 model.add(Dropout(0.2))
-model.add(Convolution2D(48,kernel_size=(5,5),strides=(2,2),padding='valid',activation='relu'))
+model.add(Convolution2D(48,kernel_size=(5,5),strides=(2,2),padding='valid',activation='relu',kernel_regularizer=regularizers.l2(0.001)))
 model.add(Dropout(0.2))
-model.add(Convolution2D(64,kernel_size=(3,3),strides=(2,2),padding='valid',activation='relu'))
+model.add(Convolution2D(64,kernel_size=(3,3),strides=(2,2),padding='valid',activation='relu',kernel_regularizer=regularizers.l2(0.001)))
 model.add(Dropout(0.2))
-model.add(Convolution2D(64,kernel_size=(3,3),strides=(2,2),padding='valid',activation='relu'))
+model.add(Convolution2D(64,kernel_size=(3,3),strides=(2,2),padding='valid',activation='relu',kernel_regularizer=regularizers.l2(0.001)))
+model.add(Dropout(0.2))
 model.add(Flatten())
-model.add(Dense(100,activation='relu'))
-model.add(Dense(50,activation='relu'))
-model.add(Dense(10,activation='relu'))
+model.add(Dense(100,activation='relu',kernel_regularizer=regularizers.l2(0.001)))
+model.add(Dense(50,activation='relu',kernel_regularizer=regularizers.l2(0.001)))
+model.add(Dense(10,activation='relu',kernel_regularizer=regularizers.l2(0.001)))
 model.add(Dense(1))
 
 # use Adam optimzer so learning rate need not to be explicitly specified
