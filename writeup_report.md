@@ -52,7 +52,7 @@ The only difference between my model and the Nvidia paper model is that, I added
 
 #### 2. Attempts to reduce overfitting in the model
 
-The model contains dropout layers after each convolution layer in order to reduce overfitting. 
+The model contains dropout layers after each convolution layer in order to reduce overfitting. And the model also uses L2 regulation, which turns out to be very effective.
 
 The model was trained and validated on different data sets to ensure that the model was not overfitting (code line 78). The model was tested by running it through the simulator and ensuring that the vehicle could stay on the track.
 
